@@ -5,13 +5,16 @@ using UnityEngine;
 public class FinishScreen : MonoBehaviour
 {
     [SerializeField] private GameObject _endBackground;
-
-    private MoverCounter _counter;
+    [SerializeField] private MoverCounter _counter;
 
     private void Start()
     {
-        _counter = FindObjectOfType<MoverCounter>();
-        _counter.Finish += Finish;
+        _counter.Finished += Finish;
+    }
+
+    private void OnEnable()
+    {
+        _counter.Finished -= Finish;
     }
 
     private void Finish()

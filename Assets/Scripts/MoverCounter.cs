@@ -5,11 +5,10 @@ using UnityEngine.Events;
 
 public class MoverCounter : MonoBehaviour
 {
-    public event UnityAction Finish;
-
     private List<GameObject> _allMovers = new List<GameObject>();
-    private CollisionChecker _checker;
     private int _enemyCount;
+
+    public event UnityAction Finished;
 
     private void Start()
     {
@@ -19,30 +18,8 @@ public class MoverCounter : MonoBehaviour
             _allMovers.Add(moverList[i].gameObject);
         }
         _enemyCount = new List<Enemy>(FindObjectsOfType<Enemy>()).Count;
-        _checker = FindObjectOfType<CollisionChecker>();
 
-        _checker.OnEnemyCollision += RemoveEnemy;
-        _checker.OnBoosterCollision += RemoveBooster;
-
-        Finish += FinishBoosters;
-    }
-
-    private void RemoveEnemy(Enemy enemy)
-    {
-        
-        _allMovers.Remove(enemy.gameObject);
-        Destroy(enemy.gameObject);
-        _enemyCount--;
-        if (_enemyCount == 0)
-        {
-            Finish?.Invoke();
-        }
-    }
-
-    private void RemoveBooster(Booster booster)
-    {
-        _allMovers.Remove(booster.gameObject);
-        Destroy(booster.gameObject);
+        Finished += FinishBoosters;
     }
 
     private void FinishBoosters()
@@ -51,6 +28,24 @@ public class MoverCounter : MonoBehaviour
         {
             mover.SetActive(false);
         }
+    }
+
+    public void OnEnemyCollided(Enemy enemy)
+    {
+        
+        _allMovers.Remove(enemy.gameObject);
+        Destroy(enemy.gameObject);
+        _enemyCount--;
+        if (_enemyCount == 0)
+        {
+            Finished?.Invoke();
+        }
+    }
+
+    public void OnBoosterCollided(Booster booster)
+    {
+        _allMovers.Remove(booster.gameObject);
+        Destroy(booster.gameObject);
     }
 
     public GameObject[] GetAllMovers()

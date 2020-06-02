@@ -5,17 +5,17 @@ using UnityEngine.Events;
 
 public class CollisionChecker : MonoBehaviour
 {
-    public event UnityAction<Enemy> OnEnemyCollision;
-    public event UnityAction<Booster> OnBoosterCollision;
+    [SerializeField] private Transform _player;
+    [SerializeField] private MoverCounter _counter;
 
-    private Transform _player;
-    private MoverCounter _counter;
+    public event UnityAction<Enemy> EnemyCollided;
+    public event UnityAction<Booster> BoosterCollided;
 
     private void Start()
     {
-        _player = FindObjectOfType<Player>().transform;
-        _counter = FindObjectOfType<MoverCounter>();
-        _counter.Finish += () => _player.GetComponent<Player>().Finish();
+        _counter.Finished += () => _player.GetComponent<Player>().Finish();
+        EnemyCollided += _counter.OnEnemyCollided;
+        BoosterCollided += _counter.OnBoosterCollided;
     }
 
     private void Update()
@@ -27,17 +27,18 @@ public class CollisionChecker : MonoBehaviour
 
             if (Vector3.Distance(_player.position, mover.transform.position) < 0.2f)
             {
-                Enemy enemy;
-                Booster booster;
-                if (mover.TryGetComponent<Enemy>(out enemy))
-                {
-                    OnEnemyCollision?.Invoke(enemy);
-                } 
-                else if (mover.TryGetComponent<Booster>(out booster))
-                {
-                    OnBoosterCollision?.Invoke(booster);
-                }
+                if (mover.TryGetComponent(out Enemy enemy))
+                    EnemyCollided?.Invoke(enemy);
+                else if (mover.TryGetComponent(out Booster booster))
+                    BoosterCollided?.Invoke(booster);
             }
         }
+    }
+
+    private void OnDisable()
+    {
+        _counter.Finished -= () => _player.GetComponent<Player>().Finish();
+        EnemyCollided -= _counter.OnEnemyCollided;
+        BoosterCollided -= _counter.OnBoosterCollided;
     }
 }
