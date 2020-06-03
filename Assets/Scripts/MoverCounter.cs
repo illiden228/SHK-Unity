@@ -32,7 +32,6 @@ public class MoverCounter : MonoBehaviour
 
     public void OnEnemyCollided(Enemy enemy)
     {
-        
         _allMovers.Remove(enemy.gameObject);
         Destroy(enemy.gameObject);
         _enemyCount--;

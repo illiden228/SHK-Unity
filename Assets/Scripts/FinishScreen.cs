@@ -12,7 +12,7 @@ public class FinishScreen : MonoBehaviour
         _counter.Finished += Finish;
     }
 
-    private void OnEnable()
+    private void OnDisable()
     {
         _counter.Finished -= Finish;
     }
