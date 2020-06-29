@@ -5,6 +5,8 @@ using UnityEngine;
 public class AIMover : MonoBehaviour
 {
     [SerializeField] private float _speed = 2;
+    [SerializeField] private float _motionAreaSize = 4;
+
     private Vector3 _target;
 
     private void Start()
@@ -21,6 +23,6 @@ public class AIMover : MonoBehaviour
 
     private void NextTarget()
     {
-        _target = Random.insideUnitCircle * 4;
+        _target = Random.insideUnitCircle * _motionAreaSize;
     }
 }
