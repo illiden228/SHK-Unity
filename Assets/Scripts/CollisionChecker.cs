@@ -13,7 +13,7 @@ public class CollisionChecker : MonoBehaviour
 
     private void Start()
     {
-        _counter.Finished += () => _player.GetComponent<Player>().Finish();
+        _counter.Finished += _player.GetComponent<Player>().Finish;
         EnemyCollided += _counter.OnEnemyCollided;
         BoosterCollided += _counter.OnBoosterCollided;
     }
@@ -37,7 +37,7 @@ public class CollisionChecker : MonoBehaviour
 
     private void OnDisable()
     {
-        _counter.Finished -= () => _player.GetComponent<Player>().Finish();
+        _counter.Finished -= _player.GetComponent<Player>().Finish;
         EnemyCollided -= _counter.OnEnemyCollided;
         BoosterCollided -= _counter.OnBoosterCollided;
     }

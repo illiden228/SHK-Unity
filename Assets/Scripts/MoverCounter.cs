@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,14 +13,8 @@ public class MoverCounter : MonoBehaviour
 
     private void Start()
     {
-        List<AIMover> moverList = new List<AIMover>(FindObjectsOfType<AIMover>());
-        for (int i = 0; i < moverList.Count; i++)
-        {
-            _allMovers.Add(moverList[i].gameObject);
-        }
-        _enemyCount = new List<Enemy>(FindObjectsOfType<Enemy>()).Count;
-
-        Finished += FinishBoosters;
+        _allMovers = FindObjectsOfType<AIMover>().Select(mover => mover.gameObject).ToList();
+        _enemyCount = FindObjectsOfType<Enemy>().Length;
     }
 
     private void FinishBoosters()
@@ -37,6 +32,7 @@ public class MoverCounter : MonoBehaviour
         _enemyCount--;
         if (_enemyCount == 0)
         {
+            FinishBoosters();
             Finished?.Invoke();
         }
     }
